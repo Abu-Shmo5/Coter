@@ -1,0 +1,3 @@
+# Coter
+Note taking website
+
