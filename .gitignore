@@ -6,6 +6,10 @@
 /web/out-tsc
 /web/bazel-out
 
+# Environments
+/api/lib/env.php
+/copy.global.sh
+
 # Node
 /web/node_modules
 npm-debug.log
