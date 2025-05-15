@@ -21,21 +21,38 @@ if (!isset($_POST['password']) || $_POST['password'] != $setupPassword) {
 <?php
 die();
 }
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <style>
+        body {
+            background-color: #212529;
+        }
+    </style>
+</head>
+<body>
+  <?php
 
+require_once("$basePath/lib/result.php");
 require_once("$basePath/lib/database.php");
+$result = new Result("Database");
 $connection = databaseConnection($databaseHostname, $databaseUsername, $databasePassword);
 
 if ($connection->query("DROP DATABASE IF EXISTS $databaseName") === TRUE) {
-    echo("Database dropped successfully<br />");
-  } else {
-    echo("Error dropping database: " . $connection->error."<br />");
-  }
+  $result->works("Database dropped successfully");
+} else {
+  $result->fails("Error dropping database: " . $connection->error);
+}
   
 
 if ($connection->query("CREATE DATABASE $databaseName") === TRUE) {
-  echo("Database created successfully<br />");
+  $result->works("Database created successfully");
 } else {
-  echo("Error creating database: " . $connection->error."<br />");
+  $result->fails("Error creating database: " . $connection->error);
 }
 
 $connection->close();
@@ -49,9 +66,9 @@ if ($connection->query("CREATE TABLE Accounts (
   username TEXT NOT NULL,
   password TEXT NOT NULL
   );") === TRUE) {
-  echo "Table Accounts created successfully<br />";
+  $result->works("Table Accounts created successfully");
 } else {
-  echo "Error creating table: " . $connection->error."<br />";
+  $result->fails("Error creating table: " . $connection->error);
 }
 
 if (!$production) {
@@ -61,9 +78,9 @@ if (!$production) {
   $username = "demo";
   $password = passwordEncryption("demo");
   if ($statment->execute()) {
-    echo("Demo account created successfully<br />");
+    $result->works("Demo account created successfully");
   } else {
-    echo("Demo account failed to create<br />");
+    $result->fails("Demo account failed to create");
   }
   $demo_account_id = $statment->insert_id;
   $statment->close();
@@ -76,9 +93,9 @@ if ($connection->query("CREATE TABLE Notes (
   content TEXT NOT NULL,
   FOREIGN KEY (account_id) REFERENCES Accounts(account_id)
   );") === TRUE) {
-  echo "Table Notes created successfully<br />";
+  $result->works("Table Notes created successfully");
 } else {
-  echo "Error creating table: " . $connection->error."<br />";
+  $result->fails("Error creating table: " . $connection->error);
 }
 
 if (!$production) {
@@ -88,19 +105,24 @@ if (!$production) {
   $title = "Plaintext";
   $content = "Hello There";
   if ($statment->execute()) {
-    echo("Plaintext note created successfully<br />");
+    $result->works("Plaintext note created successfully");
   } else {
-    echo("Plaintext note failed to create<br />");
+    $result->fails("Plaintext note failed to create");
   }
 
   $title = "Markdown";
   $content = "# Hello There";
   if ($statment->execute()) {
-    echo("Markdown note created successfully<br />");
+    $result->works("Markdown note created successfully");
   } else {
-    echo("Markdown note failed to create<br />");
+    $result->fails("Markdown note failed to create");
   }
   $statment->close();
 }
 
 $connection->close();
+$result->printResult();
+
+?>
+</body>
+</html>
