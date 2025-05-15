@@ -85,7 +85,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'register' && isset($_POST['u
 
     $row = $result->fetch_assoc();
 
-    if (passwordVerifiy($password, $row['password'])) {
+    if (!passwordVerifiy($password, $row['password'])) {
         $output['Message'] = "Invalid account";
         echo(json_encode($output));
         die();

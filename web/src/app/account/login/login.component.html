@@ -4,19 +4,19 @@
         <div class="mb-3 row">
             <label for="staticEmail" class="col-4 col-form-label">Username</label>
             <div class="col-8">
-                <input type="text" class="form-control" name="inputUsername">
+                <input type="text" class="form-control" [(ngModel)]="username" name="inputUsername">
             </div>
         </div>
         <div class="mb-3 row">
             <label for="inputPassword" class="col-4 col-form-label">Password</label>
             <div class="col-8">
-                <input type="password" class="form-control" name="inputPassword">
+                <input type="password" class="form-control" [(ngModel)]="password" name="inputPassword">
             </div>
         </div>
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8 text-center">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" (click)="login()">Submit</button>
             </div>
             <div class="col-2"></div>
         </div>
