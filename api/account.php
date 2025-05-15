@@ -101,6 +101,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'register' && isset($_POST['u
     echo(json_encode($output));
     die();
 } else if (isset($_POST['action']) && $_POST['action'] == 'check_jwt' && isset($_POST['token'])) {
+    require_once("$basePath/lib/cryptography.php");
+    require_once("$basePath/lib/security.php");
     $jwt = $_POST['token'];
     $result = JWTVerifiy($JWTPassword, $jwt);
     if (!$result[0]) {

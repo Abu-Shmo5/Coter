@@ -10,12 +10,8 @@ export class AuthService {
   constructor(private http: HttpService) { }
 
   login(username: string, password: string) {
-    this.http.post(`${environment.ApiUrl}account.php`, `action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, 
-    {headers: {"content-type": "application/x-www-form-urlencoded"}, observe: 'events'}).subscribe({next: (result: any) => {
-      return result
-    }, error: (error: any) => {
-      return error
-    }})
+    return this.http.post(`${environment.ApiUrl}account.php`, `action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, 
+    {headers: {"content-type": "application/x-www-form-urlencoded"}, observe: 'events'})
   }
 
   register(username: string, password: string) {
@@ -23,6 +19,7 @@ export class AuthService {
   }
 
   checkToken(jwtToken: string) {
-
+    return this.http.post(`${environment.ApiUrl}account.php`, `action=check_jwt&token=${encodeURIComponent(jwtToken)}`, 
+    {headers: {"content-type": "application/x-www-form-urlencoded"}, observe: 'events'})
   }
 }
