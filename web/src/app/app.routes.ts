@@ -15,7 +15,7 @@ export const routes: Routes = [
             },
             {
                 path: 'notes',
-                loadChildren: () => import('./notes/notes.module').then(m => m.NotesModule)
+                loadChildren: () => import('./notes/notes.module').then(m => m.NotesModule),
             },
             {
                 path: 'account',

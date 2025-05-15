@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Injector, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { environment } from '../environment/environment';
+import type { LocalstorageService } from '../services/localstorage.service';
 
 @Component({
   selector: 'app-layout',
@@ -13,6 +14,7 @@ export class LayoutComponent implements OnInit {
 
   isLoading = true
   isAuth = false
+  localstorageService!: LocalstorageService
 
   constructor(private injector: Injector) {}
 
@@ -26,7 +28,7 @@ export class LayoutComponent implements OnInit {
     const platformserviceService = this.injector.get(PlatformserviceService);
 
     const { LocalstorageService } = await import('../services/localstorage.service');
-    const localstorageService = this.injector.get(LocalstorageService);
+    this.localstorageService = this.injector.get(LocalstorageService);
 
     const { HttpService } = await import('../services/http.service');
     const httpService = this.injector.get(HttpService);
@@ -40,21 +42,31 @@ export class LayoutComponent implements OnInit {
     const { TranslationService } = await import('../services/translation.service');
     const translationService = this.injector.get(TranslationService);
 
-    let jwtToken = localstorageService.getItemSingle<string>(environment.tokenStorageName) ?? ""
+    let jwtToken = this.localstorageService.getItemSingle<string>(environment.tokenStorageName) ?? ""
     authService.checkToken(jwtToken).subscribe({next: (result: any) => {
       if (result['status'] == 200) {
         if (result.body['Status'] == 'Worked' && result.body['Message'])
         {
           this.isAuth = true
           return
+        } else {
+          this.localstorageService.setItem(environment.tokenStorageName, "")
+          this.isAuth = false
         }
       }
-      this.isAuth = false
     }, error: (error: any) => {
       return error
     }})
-    
+
+    this.localstorageService.getItem(environment.tokenStorageName).subscribe(value => {
+      this.isAuth = value != "" && value != null
+    });
+
     this.isLoading = false
+  }
+
+  logout() {
+    this.localstorageService.setItem(environment.tokenStorageName, "");
   }
 
 }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { LocalstorageService } from '../../services/localstorage.service';
 import { environment } from '../../environment/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent {
   username: string = ""
   password: string = ""
 
-  constructor(private auth: AuthService, private localstorage: LocalstorageService) {}
+  constructor(private auth: AuthService, private localstorage: LocalstorageService, private router: Router) {}
 
   login() {
     let response = this.auth.login(this.username, this.password)
@@ -24,6 +25,7 @@ export class LoginComponent {
       if (result['status'] == 200) {
         if (result.body['Status'] == "Worked") {
           this.localstorage.setItem(environment.tokenStorageName, result.body['Message'])
+          this.router.navigate(['/account/dashboard'])
           return
         }
         alert(result.body['Message'])
